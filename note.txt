@@ -1,0 +1,1 @@
+Zcash uses zk-SNARKs, a type of zero-knowledge proof, to enable private transactions by hiding sender, receiver, and amount details while still allowing network validation. This ensures strong privacy without sacrificing blockchain integrity.
