@@ -1,16 +1,9 @@
+mod blockchain;
+use blockchain::{Blockchain, Transaction};
 use ed25519_dalek::{Keypair, Signer, Verifier, PublicKey};
 use rand::rngs::OsRng;
-use serde::{Serialize, Deserialize};
 use serde_json;
 use hex;
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Transaction {
-    sender: String,
-    receiver: String,
-    amount: f64,
-    signature: Vec<u8>,
-}
 
 fn main() {
     // Generate keypair
@@ -35,12 +28,16 @@ fn main() {
         ..tx
     };
 
+    // Add to blockchain
+    let mut blockchain = Blockchain::new();
+    blockchain.add_transaction(tx_signed.clone());
+
     // Verify signature
     let public_key_bytes = hex::decode(&tx_signed.sender).unwrap();
     let public_key = PublicKey::from_bytes(&public_key_bytes).unwrap();
     let signature_bytes = tx_signed.signature.clone();
     let verified = public_key.verify(tx_bytes, &ed25519_dalek::Signature::from_bytes(&signature_bytes).unwrap()).is_ok();
 
-    println!("Transaction: {:?}", tx_signed);
+    println!("Blockchain: {:?}", blockchain);
     println!("Signature verified: {}", verified);
 }
